@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>../data/branch-closed.png</file>
+        <file>../data/branch-end.png</file>
+        <file>../data/branch-more.png</file>
+        <file>../data/branch-open.png</file>
+        <file>../data/vline.png</file>
+        <file>../data/branch-closed1.png</file>
+        <file>../data/branch-open1.png</file>
+        <file>../data/vline1.png</file>
+        <file>../data/branch-end1.png</file>
+        <file>../data/branch-more1.png</file>
+        <file>../data/branch-closed2.png</file>
+        <file>../data/branch-open2.png</file>
+        <file>../data/branch-closed3.png</file>
+        <file>../data/IM_96x96.png</file>
+        <file>../data/IM_24x24.png</file>
+        <file>../data/IM_16x16.png</file>
+        <file>../data/crypto_avax_avalanche_icon_264357.ico</file>
+    </qresource>
+</RCC>

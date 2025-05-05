@@ -15,6 +15,11 @@ QT += widgets
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 # Input
-HEADERS += command.h customtablewidget.h mainwindow.h
+HEADERS += command.h customtablewidget.h mainwindow.h \
+    pushbuttondelegate.h
 FORMS += mainwindow.ui
-SOURCES += command.cpp customtablewidget.cpp main.cpp mainwindow.cpp
+SOURCES += command.cpp customtablewidget.cpp main.cpp mainwindow.cpp \
+    pushbuttondelegate.cpp
+
+RESOURCES += \
+    resorce.qrc
