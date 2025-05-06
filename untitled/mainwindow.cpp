@@ -7,6 +7,11 @@
 #include "QLineEdit"
 #include "pushbuttondelegate.h"
 #include <QSystemTrayIcon>
+#include <QDBusConnection>
+#include <QDBusMessage>
+#include <QDBusVariant>
+#include <QDBusReply>
+#include <QDBusInterface>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -712,25 +717,49 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionundo, &QAction::triggered, this, &MainWindow::actionundo_triggered);
     connect(ui->actionredo, &QAction::triggered, this, &MainWindow::actionredo_triggered);
     connect(ui->message,&QAction::triggered, this,&MainWindow::message_action);
-
-    trayIcon = new QSystemTrayIcon(this);
-    trayIcon->setIcon(QIcon(":/img/data/IM_96x96.png"));
-    trayIcon->show();
 }
 
 void MainWindow::message_action()
 {
-    // trayIcon->setIcon(QIcon(":/img/data/IM_96x96.png"));
-    // QString appName = QCoreApplication::applicationName();
-    // QString title = "Заголовок уведомления";
-    // //QString title = appName;
-    // QString message = "Это содержимое вашего системного сообщения.";
-    // trayIcon->showMessage(title, message, QSystemTrayIcon::NoIcon);
+    QDBusInterface notifyInterface("org.freedesktop.Notifications",
+                                   "/org/freedesktop/Notifications",
+                                   "org.freedesktop.Notifications",
+                                   QDBusConnection::sessionBus());
 
-    QIcon icon(":/img/data/branch-more.png");
-    trayIcon->setIcon(icon);
-    trayIcon->show();
-    trayIcon->showMessage("Заголовок", "Текст сообщения", QSystemTrayIcon::NoIcon);
+    if (!notifyInterface.isValid())
+    {
+        qWarning() << "Failed to connect to notifications service";
+        return;
+    }
+
+    // Parameters for Notify method:
+    // app_name, replaces_id, app_icon, summary, body, actions, hints, expire_timeout
+    QString appName = QCoreApplication::applicationName();
+    uint replacesId = 0; // 0 means no existing notification to replace
+    QString appIcon = "/home/elf/undoredo/data/IM_96x96.png"; // icon name or path
+    QString summary = "Hello";
+    QString body = "This is a notification from Qt via D-Bus";
+    QStringList actions; // empty list means no actions
+    QVariantMap hints;   // additional hints (empty here)
+    int expireTimeout = 5000; // milliseconds
+
+    QDBusReply<uint> reply = notifyInterface.call("Notify",
+                                                  appName,
+                                                  replacesId,
+                                                  appIcon,
+                                                  summary,
+                                                  body,
+                                                  actions,
+                                                  hints,
+                                                  expireTimeout);
+
+    if (reply.isValid()) {
+        uint notificationId = reply.value();
+        qDebug() << "Notification sent with ID:" << notificationId;
+    } else {
+        qWarning() << "Failed to send notification:" << reply.error().message();
+        return;
+    }
 }
 
 MainWindow::~MainWindow()
